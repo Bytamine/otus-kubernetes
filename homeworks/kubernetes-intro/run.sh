@@ -40,18 +40,6 @@ prepare() {
     # Create kind cluster
     kind create cluster --wait 300s
     # Wait while all components in kube-system namespace will start
-    echo " --- kubectl cluster-info --- "
-    kubectl cluster-info
-    echo " --- kubectl get componentstatuses --- "
-    kubectl get componentstatuses
-    echo " --- kubectl get pods -A -o wide --- "
-    kubectl get pods -A -o wide
-    echo " --- kubectl describe pod -n kube-system -l k8s-app=kube-proxy --- "
-    kubectl describe pod -n kube-system -l k8s-app=kube-proxy
-    echo " --- kubectl logs -n kube-system -l k8s-app=kube-proxy --- "
-    kubectl logs -n kube-system -l k8s-app=kube-proxy
-    echo " --- kubectl logs -n kube-system -l k8s-app=kube-proxy --previous --- "
-    kubectl logs -n kube-system -l k8s-app=kube-proxy --previous
     kubectl wait --for=condition=Ready pod --all -n kube-system --timeout=300s
 }
 
