@@ -23,4 +23,4 @@ jobs:
         path: "./otus-platform-tests/"
 
     - name: Run tests
-      run: curl https://raw.githubusercontent.com/AndreyRomanchev/otus-kubernetes/run.sh | bash
+      run: curl https://raw.githubusercontent.com/AndreyRomanchev/otus-kubernetes/main/run.sh | bash
