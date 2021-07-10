@@ -7,7 +7,7 @@ export KUBECONFIG=~/.kube/config
 
 download(){
     export KUBECTL_VER="$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)"
-    export KIND_VER="v0.10.0"
+    export KIND_VER="v0.11.1"
 
     # Download kubectl
     curl -L -o /tmp/kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VER}/bin/linux/amd64/kubectl
@@ -46,6 +46,12 @@ prepare() {
     kubectl get componentstatuses
     echo " --- kubectl get pods -A -o wide --- "
     kubectl get pods -A -o wide
+    echo " --- kubectl describe pod -n kube-system -l k8s-app=kube-proxy --- "
+    kubectl describe pod -n kube-system -l k8s-app=kube-proxy
+    echo " --- kubectl logs -n kube-system -l k8s-app=kube-proxy --- "
+    kubectl logs -n kube-system -l k8s-app=kube-proxy
+    echo " --- kubectl logs -n kube-system -l k8s-app=kube-proxy --previous --- "
+    kubectl logs -n kube-system -l k8s-app=kube-proxy --previous
     # kubectl wait --for=condition=Ready pod --all -n kube-system --timeout=300s
 }
 
