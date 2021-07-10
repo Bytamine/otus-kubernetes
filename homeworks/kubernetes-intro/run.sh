@@ -52,7 +52,7 @@ prepare() {
     kubectl logs -n kube-system -l k8s-app=kube-proxy
     echo " --- kubectl logs -n kube-system -l k8s-app=kube-proxy --previous --- "
     kubectl logs -n kube-system -l k8s-app=kube-proxy --previous
-    # kubectl wait --for=condition=Ready pod --all -n kube-system --timeout=300s
+    kubectl wait --for=condition=Ready pod --all -n kube-system --timeout=300s
 }
 
 run_mandatory_tests() {
