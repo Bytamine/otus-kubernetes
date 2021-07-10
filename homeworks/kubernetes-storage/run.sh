@@ -2,7 +2,7 @@
 set -xe
 
 # Download kubectl
-curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl 
+curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kubectl
 chmod +x kubectl
 sudo mv kubectl /usr/local/bin/
 
@@ -12,7 +12,7 @@ chmod +x kind
 sudo mv kind /usr/local/bin/
 
 # Create kind cluster
-kind create cluster --config kubernetes-storage/cluster/cluster.yaml --wait 300s
+kind create cluster --config ./otus-platform-tests/homeworks/kubernetes-storage/cluster.yaml --wait 300s
 
 # Use default kind context
 kubectl config use-context kind-kind
@@ -49,9 +49,9 @@ kubectl get pvc storage-pvc > /dev/null || exit 1
 kubectl describe pod storage-pod | grep storage-pvc > /dev/null || exit 1
 
 # store super important data
-kubectl exec storage-pod -- /bin/bash -c "echo kek lol i am eagle > /data/item" || exit 1
+kubectl exec storage-pod -- /bin/sh -c "echo kek lol i am eagle > /data/item" || exit 1
 
-MD5FIRST=$(kubectl exec storage-pod -- /bin/bash -c "md5sum /data/item | cut -f 1 -d \" \"")
+MD5FIRST=$(kubectl exec storage-pod -- /bin/sh -c "md5sum /data/item | cut -f 1 -d \" \"")
 
 # let we do a snap now
 cat <<EOF | kubectl apply -f -
@@ -69,27 +69,12 @@ EOF
 kubectl get pod storage-pod -o yaml --export > backup.yml || exit 1
 
 # now we will delete everything
-kubectl delete pod storage-pod || exit 1
-kubectl delete pvc storage-pvc || exit 1
+kubectl patch pvc storage-pvc -p '{"metadata":{"finalizers": []}}' --type=merge
+kubectl delete pod storage-pod
+kubectl delete pvc storage-pvc
 
 # okay, time for black magic!
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: storage-pvc
-spec:
-  storageClassName: csi-hostpath-sc
-  dataSource:
-    name: storage-snapshot
-    kind: VolumeSnapshot
-    apiGroup: snapshot.storage.k8s.io
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
-EOF
+kubectl apply -f ./otus-platform-tests/homeworks/kubernetes-storage/pvc.yaml
 
 # rise and shine
 kubectl apply -f backup.yml || exit 1
@@ -98,7 +83,7 @@ kubectl apply -f backup.yml || exit 1
 kubectl wait --for=condition=Ready pod storage-pod -n default --timeout=300s
 
 # get it again
-MD5SECOND=$(kubectl exec storage-pod -- /bin/bash -c "md5sum /data/item | cut -f 1 -d \" \"")
+MD5SECOND=$(kubectl exec storage-pod -- /bin/sh -c "md5sum /data/item | cut -f 1 -d \" \"")
 
 if [ $MD5FIRST != $MD5SECOND ]; then
   echo "Whooops! Snaphot data not equals original v_v"; exit 1;

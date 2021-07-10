@@ -3,9 +3,9 @@ set -xe
 
 export TERM=xterm
 
-download(){
+download() {
     export KUBECTL_VER="$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)"
-    export KIND_VER="v0.4.0"
+    export KIND_VER="v0.7.0"
 
     # Download kubectl
     curl -L -o /tmp/kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VER}/bin/linux/amd64/kubectl
@@ -24,8 +24,8 @@ pytest_bootstrap() {
     sudo apt-get -q -y install python3-venv
 
     # Create and activate venv for PyTest
-    python3 -m venv /tmp/pytest && \
-    source /tmp/pytest/bin/activate
+    python3 -m venv /tmp/pytest &&
+        source /tmp/pytest/bin/activate
 
     pip3 install -q -U pip setuptools
 
@@ -35,14 +35,15 @@ pytest_bootstrap() {
 }
 
 prepare() {
+    export KUBECONFIG="${HOME}/.kube/kind-config-pytest"
     # Create kind cluster
-    kind create cluster --wait 300s
-    export KUBECONFIG="$(kind get kubeconfig-path)"
+    kind create cluster --name=pytest --wait 300s -q
     # Wait while all components in kube-system namespace will start
     kubectl wait --for=condition=Ready pod --all -n kube-system --timeout=300s
-
-    curl -L -o ./manifests/metallb.yaml https://raw.githubusercontent.com/google/metallb/v0.8.1/manifests/metallb.yaml
-    curl -L -o ./manifests/ingress-nginx.yaml https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml
+    kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/namespace.yaml
+    kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
+    curl -L -o ./manifests/metallb.yaml https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/metallb.yaml
+    curl -L -o ./manifests/ingress-nginx.yaml https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-0.32.0/deploy/static/provider/cloud/deploy.yaml
 }
 
 run_tests() {
@@ -51,7 +52,7 @@ run_tests() {
 
 finalize() {
     # Manual approval
-    echo "All tests passed. Proceed with manual approval"
+    echo "All tests passed. Proceed with manual approval by OTUS teacher (wait for PR to be reviewed)."
     exit 1
 }
 
