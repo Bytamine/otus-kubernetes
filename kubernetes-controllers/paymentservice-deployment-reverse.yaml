@@ -21,7 +21,7 @@ spec:
         app: payment-reverse
     spec:
       containers:
-        - name: payment-bg
+        - name: payment-reverse
           image: puzyrevyaroslav/hipster_frontend:v0.0.2
           resources: {}
           env:
