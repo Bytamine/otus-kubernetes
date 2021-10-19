@@ -4,14 +4,14 @@ import kubetest.objects
 import time
 
 @pytest.fixture(scope="module")
-def web_pod(kube_module) -> kubetest.objects.Pod:
+def web_pod(kube) -> kubetest.objects.Pod:
     # Wait while token controller generates tokens and adds them to the service account
     time.sleep(10)
-    pod = kube_module.load_pod("./kubernetes-intro/web-pod.yaml")
+    pod = kube.load_pod("./kubernetes-intro/web-pod.yaml")
     pod.create()
-    kube_module.wait_until_created(pod, timeout=10)
+    kube.wait_until_created(pod, timeout=10)
 
-    pods = kube_module.get_pods()
+    pods = kube.get_pods()
     p = pods.get("web")
     p.wait_until_ready(timeout=120)
 
