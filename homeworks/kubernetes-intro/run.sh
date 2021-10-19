@@ -77,5 +77,5 @@ fi
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 kubectl get pods -A -o wide
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-kubectl describe web
+kubectl describe pod web
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
