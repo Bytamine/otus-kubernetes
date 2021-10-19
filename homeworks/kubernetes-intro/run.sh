@@ -37,7 +37,11 @@ pytest_bootstrap() {
     echo "============================================================"
     cat requirements.txt
     echo "============================================================"
+<<<<<<< HEAD
     pip freeze | grep kube
+=======
+    pip3 freeze | grep kube
+>>>>>>> debug
     echo "============================================================"
 
     pip3 install -q --disable-pip-version-check -r requirements.txt
