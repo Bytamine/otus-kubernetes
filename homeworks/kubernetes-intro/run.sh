@@ -33,16 +33,7 @@ pytest_bootstrap() {
 
     # Setup Pytest environment
     cp -fr ./otus-platform-tests/homeworks/${HOMEWORK}/* ./
-
-    echo "============================================================"
-    cat requirements.txt
-    echo "============================================================"
-
     pip3 install -q --disable-pip-version-check -r requirements.txt
-    echo "============================================================"
-
-    pip3 freeze
-    echo "============================================================"
 }
 
 prepare() {
@@ -66,16 +57,10 @@ pytest_bootstrap
 echo "Preparing test cluster..."
 prepare
 echo "Running mandatory tests..."
-run_mandatory_tests || true
+run_mandatory_tests
 
 FILE=./kubernetes-intro/frontend-pod-healthy.yaml
 if [ -f "$FILE" ]; then
     echo "Manifest $FILE exist, running additional tests"
-    run_additional_tests || true
+    run_additional_tests
 fi
-
-echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-kubectl get pods -A -o wide
-echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-kubectl describe pod -A
-echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
