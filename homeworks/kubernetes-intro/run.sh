@@ -53,6 +53,9 @@ prepare() {
 }
 
 run_mandatory_tests() {
+    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    kubectl get pods -A -o wide
+    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
     pytest --color=yes --kube-config=~/.kube/config mandatory-tests/
 }
 
