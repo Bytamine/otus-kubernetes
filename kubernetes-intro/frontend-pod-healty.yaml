@@ -6,7 +6,7 @@ metadata:
   name: frontend
 spec:
   containers:
-  - image: mansory/frontend:master
+  - image: tjma/frontend:v0.0.2
     name: frontend
     env:
       - name: PORT
