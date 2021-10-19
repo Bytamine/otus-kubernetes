@@ -19,7 +19,7 @@ spec:
           image: puzyrevyaroslav/hipster_frontend:v0.0.2
           resources: {}
           readinessProbe:
-            initialDelaySeconds: 10
+            initialDelaySeconds: 5
             httpGet:
               path: "/_healthz"
               port: 8080
