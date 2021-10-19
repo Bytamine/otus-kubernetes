@@ -33,6 +33,11 @@ pytest_bootstrap() {
 
     # Setup Pytest environment
     cp -fr ./otus-platform-tests/homeworks/${HOMEWORK}/* ./
+
+    echo "============================================================"
+    cat requirements.txt
+    echo "============================================================"
+
     pip3 install -q --disable-pip-version-check -r requirements.txt
 }
 
