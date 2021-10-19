@@ -53,9 +53,6 @@ prepare() {
 }
 
 run_mandatory_tests() {
-    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-    kubectl get pods -A -o wide
-    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
     pytest --color=yes --kube-config=~/.kube/config mandatory-tests/
 }
 
@@ -76,3 +73,7 @@ if [ -f "$FILE" ]; then
     echo "Manifest $FILE exist, running additional tests"
     run_additional_tests
 fi
+
+echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+kubectl get pods -A -o wide
+echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"

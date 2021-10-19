@@ -14,9 +14,6 @@ def frontend_pod(kube_module) -> kubetest.objects.Pod:
     pods = kube_module.get_pods()
     p = pods.get("frontend")
     p.wait_until_containers_start(timeout=120)
-    yield p
-    p.delete(options=None)
-    p.wait_until_deleted()
 
 @pytest.mark.it("TEST: Check pod configuration")
 def test_resource_existence(frontend_pod):
